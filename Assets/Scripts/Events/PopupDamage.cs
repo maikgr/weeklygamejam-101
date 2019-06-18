@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 
-namespace Assets.Scripts {
+namespace Assets.Scripts.Events {
     public class PopupDamage : MonoBehaviour {
         [SerializeField]
         private float floatSpeed;
@@ -48,21 +48,21 @@ namespace Assets.Scripts {
         public void Hit(int damage) {
             this.textMesh.text = damage.ToString();
             this.textMesh.color = Color.yellow;
-            this.textMesh.fontSize = 20;
+            this.textMesh.fontSize = 35;
             this.gameObject.SetActive(true);
         }
 
         public void Crit(int damage) {
             this.textMesh.text = damage.ToString() + "!";
             this.textMesh.color = Color.red;
-            this.textMesh.fontSize = 30;
+            this.textMesh.fontSize = 50;
             this.gameObject.SetActive(true);
         }
 
         public void Miss() {
             this.textMesh.text = "Miss";
             this.textMesh.color = Color.white;
-            this.textMesh.fontSize = 20;
+            this.textMesh.fontSize = 35;
             this.gameObject.SetActive(true);
         }
     }

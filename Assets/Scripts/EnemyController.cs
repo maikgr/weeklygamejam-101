@@ -1,5 +1,7 @@
 ﻿using Assets.Scripts.Entities;
+using Assets.Scripts.Events;
 using Assets.Scripts.Repositories;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -18,20 +20,22 @@ namespace Assets.Scripts {
         private TextMeshProUGUI displayName;
         [SerializeField]
         private PopupDamage popupDamage;
+        [SerializeField]
+        private Animator animator;
 
         public int CurrentHealth { get; private set; }
 
         private RectTransform rect;
         private Enemy enemy;
-        private TalkType talkType;
+        private IList<Action> onDeadEvents;
 
         public void Awake () {
             rect = GetComponent<RectTransform>();
+            onDeadEvents = new List<Action>();
         }
 
         public void SetEnemy (Enemy enemy, Trait trait) {
             this.enemy = enemy;
-            this.talkType = trait.CorrectTalk;
 
             this.displayName.text = trait.Name + " " + enemy.name;
             this.CurrentHealth = enemy.stats.health;
@@ -49,6 +53,7 @@ namespace Assets.Scripts {
         }
 
         public void ReceiveDamage (int damage, bool isCrit = false) {
+            animator.SetTrigger("hurt");
             if (isCrit) {
                 popupDamage.Crit(damage);
             }
@@ -64,14 +69,14 @@ namespace Assets.Scripts {
             popupDamage.Miss();
         }
 
+        public void Attack() {
+            animator.SetTrigger("attack");
+        }
+
         public Stats Stats {
             get {
                 return enemy.stats;
             }
-        }
-
-        public TalkType GetTalkType () {
-            return talkType;
         }
 
         public bool IsAlive {
@@ -80,10 +85,23 @@ namespace Assets.Scripts {
             }
         }
 
+        public void OnDead(Action action) {
+            onDeadEvents.Add(action);
+        }
+
         private void CheckAlive () {
             if (CurrentHealth.Equals(0)) {
-                gameObject.SetActive(false);
+                StartCoroutine(DeadCoroutine());
             }
+        }
+
+        private IEnumerator DeadCoroutine() {
+            animator.SetTrigger("die");
+            yield return new WaitForSeconds(1);
+            foreach(Action action in onDeadEvents) {
+                action.Invoke();
+            }
+            gameObject.SetActive(false);
         }
     }
 }

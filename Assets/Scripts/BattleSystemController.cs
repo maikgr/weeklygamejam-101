@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.Entities;
+using Assets.Scripts.Events;
 using Assets.Scripts.Repositories;
 using System;
 using System.Collections;
@@ -37,11 +38,15 @@ namespace Assets.Scripts {
             this.animatedEvents = new List<Action>();
         }
 
+        public void Start() {
+            enemyControl.OnDead(() => playerControl.BattleMode(false));
+        }
+
         public void SetEnemy () {
             Trait = traitRepository.Random();
             Enemy = enemyRepository.GetEnemy();
-
             this.enemyControl.SetEnemy(Enemy, Trait);
+            playerControl.BattleMode(true);
         }
 
         public void Fight () {
@@ -106,6 +111,7 @@ namespace Assets.Scripts {
             bool isHit = DiceRoll(player.accuracy);
             bool isCrit = DiceRoll(player.critRate);
 
+            playerControl.Attack();
             if (isHit && isCrit) {
                 enemyControl.ReceiveDamage((int)(player.damage * 1.5f), true);
             }
@@ -122,6 +128,7 @@ namespace Assets.Scripts {
             bool isHit = DiceRoll(enemy.accuracy);
             bool isCrit = DiceRoll(enemy.critRate);
 
+            enemyControl.Attack();
             if (isHit && isCrit) {
                 playerControl.ReceiveDamage((int)(enemy.damage * 1.5f), true);
             }

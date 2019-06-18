@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 
-namespace Assets.Scripts.Repositories {
+namespace Assets.Scripts.Events {
     public class PopupTalk : MonoBehaviour {
 
         [SerializeField]

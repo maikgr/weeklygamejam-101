@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.Entities;
+using Assets.Scripts.Events;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -21,6 +22,8 @@ namespace Assets.Scripts {
         private TextMeshProUGUI staminaPoints;
         [SerializeField]
         private PopupDamage popupDamage;
+        [SerializeField]
+        private Animator animator;
 
         private int currentHealth;
         private int currentStamina;
@@ -45,6 +48,7 @@ namespace Assets.Scripts {
         }
 
         public void ReceiveDamage (int damage, bool isCrit = false) {
+            animator.SetTrigger("hurt");
             if (isCrit) {
                 popupDamage.Crit(damage);
             }
@@ -53,6 +57,18 @@ namespace Assets.Scripts {
             }
             currentHealth = Mathf.Max(0, currentHealth - damage);
             UpdateHealth();
+        }
+
+        public void Attack() {
+            animator.SetTrigger("attack");
+        }
+
+        public void BattleMode(bool active) {
+            animator.SetBool("battle", active);
+        }
+
+        public void ExploreMode(bool active) {
+            animator.SetBool("explore", active);
         }
 
         public void MissDamage () {
