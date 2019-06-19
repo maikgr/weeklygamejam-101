@@ -38,7 +38,7 @@ namespace Assets.Scripts {
 
         private void UpdateHealth () {
             healthBar.localScale = new Vector3((float)currentHealth / stats.health, 1, 1);
-            healthPoints.text = $"{currentHealth}/{stats.health}";
+            healthPoints.text = $"HP {currentHealth}/{stats.health}";
         }
 
         public Stats Stats {
